@@ -48,7 +48,7 @@ const PERSONAL_DEFINITION = `I am an AI Engineer focused on building agentic RAG
 export async function generateOutreachEmail(lead: Lead, companyContext: string) {
   const prompt = `
 # ROLE
-You are Yosra Omrane, a world-class AI Software Engineer. Your writing style is technical, ambitious, and deeply researched. You don't just "apply"—you propose a vision for how you can accelerate a company's roadmap.
+You are Yosra Omrane, a world-class, visionary AI Software Engineer. You write cold outreach emails to tech leaders that are so insightful they cannot be ignored. You don't ask for a job—you propose technical value and demonstrate peer-level engineering acumen to secure an interview.
 
 # INPUT DATA
 - Lead: ${lead.name}, ${lead.role} at ${lead.company}
@@ -57,47 +57,43 @@ You are Yosra Omrane, a world-class AI Software Engineer. Your writing style is 
 - Personal Definition: ${PERSONAL_DEFINITION}
 
 # STEP 1: ANALYZE (Internal Monologue)
-1. Identify the company's "North Star" (e.g., if it's LXA, it's manufacturing efficiency via Digital Twins).
-2. Identify the "Technical Hurdle" they likely face (e.g., scaling decision logic, real-time data synthesis).
-3. Select the most "Attractive" project from my background that solves a similar technical hurdle.
+1. Deduce ${lead.company}'s core product and their most likely current AI/engineering bottleneck.
+2. Formulate a highly specific technical hypothesis about how agentic workflows, RAG, or MLOps could solve that bottleneck.
+3. Select ONE project from my background that perfectly demonstrates I have already built this solution.
 
 # STEP 2: COMPOSE THE EMAIL
-Write a high-motivation email following this structure:
+Write a highly compelling outreach email.
 
-## Subject Line:
-Must be a "pattern interrupt." Do NOT use "Job Application." 
-Use: "[Specific Tech Idea] for ${lead.company}’s [Product/Mission]" or "[Technical Insight] regarding ${lead.company}'s AI strategy."
+## Subject Line
+Must be a "pattern interrupt" that a busy executive would open. 
+Examples: "Agentic architecture for ${lead.company}'s [Product]", "Scaling [Specific Tech] at ${lead.company}", or a thought-provoking technical question.
 
-## Paragraph 1: The Obsession Hook
-Show them you aren't just looking for a job; you are obsessed with their specific problem. 
-Mention a specific detail from the context (e.g., "The way ${lead.company} leverages digital twins to bridge the gap between design and physical production is the most compelling use of AI in manufacturing right now.")
-The intro should be direct and concise—not too long, but showing depth.
+## Paragraph 1: The Hook & Hypothesis
+Start with a direct, insightful observation about their tech or market. Prove immediately that you understand their deepest technical challenges.
+Example: "The way ${lead.company} is handling [problem] is fascinating, but scaling that logic usually creates bottlenecks in [specific area]."
 
-## Paragraph 2: The Ambition & Motivation
-State clearly why you want to build *with them*. This paragraph MUST include the Personal Definition **verbatim** (or use it as the opening sentence). Place the personal-definition at the start of the paragraph followed by one sentence that ties this motivation directly to ${lead.company}'s work.
-Example required opening sentence (use this exact text or verbatim Personal Definition):
-"I am an AI Engineer focused on building agentic RAG systems and multi agent architectures that move beyond simple automation to production ready decision support. I specialize in deploying end to end AI pipelines that turn complex data into structured, actionable insights."
+## Paragraph 2: The Core Identity (Verbatim Integration)
+You MUST include my Personal Definition exactly as written here, seamlessly integrated:
+"${PERSONAL_DEFINITION}"
+Follow it with a sentence connecting this identity directly to the hypothesis you formed for ${lead.company}.
 
-## Paragraph 3: The "Dynamic Proof"
-Link your most relevant project. Use "The core challenge mirrors yours." 
-Select the most relevant project from: ${PROFESSIONAL_EXPERIENCE}.
-Highlight how your technical solution (e.g., LangGraph, MLOps, forecasting) solves their specific scaling hurdle.
+## Paragraph 3: The Proof of Competence
+Link your most relevant project. Use the phrase "The core challenge mirrors yours." 
+Briefly describe the specific architecture (e.g., LangGraph, MCP, LightGBM) you built in that project, and how it directly de-risks their roadmap. Show, don't just tell.
 
-## Paragraph 4: The Bold Ask
-"I’d love to show you my resume and discuss how my experience with multi-agent orchestration could support your current roadmap."
+## Paragraph 4: The Call to Action
+Close with a soft, collaborative call to action indicating that you have attached your resume and are open to joining their team.
+You MUST NOT ask for a "15-minute call" or claim you "sketched a roadmap". Use this exact phrasing or very similar:
+"I have attached my resume to provide more details about my background. If you see a potential fit for me to join your team and collaborate on these challenges, I would be very open to a discussion."
 
 # CONSTRAINTS
 - Greeting: "Dear ${lead.name},"
 - Signature: "Best regards,\nYosra Omrane\nAI Software Engineer"
-- No "I hope you are doing well."
-- No "My name is Yosra."
-- ABSOLUTELY NO dashes or bullet points. Use clean, flowing paragraphs.
-- Intro must be direct and technical.
-- Max 150 words.
-- Tone: Elite, technical, vision-driven.
-
-Note: Increase max words to allow for the full personal-definition + technical detail.
-Max 200 words.
+- NO fluff ("I hope you are well", "My name is").
+- DO NOT ask for a call, meeting, or claim to have sketched a roadmap.
+- ABSOLUTELY NO dashes (-) or bullet points. Use beautifully flowing paragraphs.
+- Max 200 words. Be concise, punchy, and deeply technical.
+- Tone: Peer-to-peer, visionary, elite, yet highly pragmatic.
 
 # OUTPUT FORMAT
 Subject: [Subject]
@@ -113,77 +109,9 @@ Subject: [Subject]
     }
 
     const lines = text.split('\n');
-    const subject = lines[0].replace(/^Subject:\s*/i, '').trim();
-    const body = lines.slice(1).join('\n').trim();
-    // Post-process body to enforce structure and include PERSONAL_DEFINITION verbatim
-    function enforceStructure(leadName: string, rawBody: string) {
-      const greeting = `Dear ${leadName},`;
-
-      // Normalize line endings and collapse excess blank lines
-      let b = rawBody.replace(/\r\n/g, '\n').replace(/\n{3,}/g, '\n\n').trim();
-
-      // Ensure greeting at top
-      if (!b.startsWith(greeting)) {
-        b = `${greeting}\n\n${b}`;
-      }
-
-      // Split into paragraphs by double newlines
-      let paras = b.split(/\n\s*\n/).map(p => p.trim()).filter(Boolean);
-
-      // Remove greeting from paras if present as first paragraph
-      if (paras[0] === greeting) {
-        paras = paras.slice(1);
-      }
-
-      // Ensure we have at least 4 paragraphs; if fewer, try to split by sentences
-      if (paras.length < 4) {
-        const allText = paras.join(' ');
-        const sentences = allText.match(/[^.!?]+[.!?]?/g) || [allText];
-        const target = 4;
-        const newParas: string[] = [];
-        let i = 0;
-        for (let p = 0; p < target; p++) {
-          let part = '';
-          // distribute sentences roughly evenly
-          const take = Math.ceil((sentences.length - i) / (target - p));
-          for (let t = 0; t < take && i < sentences.length; t++, i++) {
-            part += (part ? ' ' : '') + sentences[i].trim();
-          }
-          newParas.push(part.trim());
-        }
-        paras = newParas;
-      }
-
-      // Ensure paragraph 2 starts with the PERSONAL_DEFINITION verbatim
-      const personal = PERSONAL_DEFINITION.trim();
-      if (!paras[1].startsWith(personal)) {
-        paras[1] = `${personal} ${paras[1]}`.trim();
-      }
-
-      // Ensure signature at the end
-      const signature = `Best regards,\nYosra Omrane\nAI Software Engineer`;
-      const lastPara = paras[paras.length - 1];
-      if (!lastPara.includes('Best regards') && !lastPara.includes('Best,') && !lastPara.includes('Regards')) {
-        paras.push(signature);
-      } else if (!paras[paras.length - 1].includes('Yosra')) {
-        paras[paras.length - 1] = `${paras[paras.length - 1]}\n\n${signature}`;
-      }
-
-      // Reassemble: greeting + paragraphs separated by blank line
-      const finalBody = `${greeting}\n\n${paras.join('\n\n')}`;
-
-      // Enforce max words
-      const maxWords = 200;
-      const words = finalBody.split(/\s+/);
-      if (words.length > maxWords) {
-        return words.slice(0, maxWords).join(' ') + '...\n\n' + signature;
-      }
-
-      return finalBody;
-    }
-
-    const finalBody = enforceStructure(lead.name, body);
-    const finalSubject = subject || `${lead.company} — Agentic RAG & multi-agent systems`;
+    const finalSubject = lines[0].replace(/^Subject:\s*/i, '').trim();
+    const finalBody = lines.slice(1).join('\n').trim();
+    
     return { subject: finalSubject, body: finalBody };
   } catch (error) {
     console.error("Ollama Generation Error:", error);
