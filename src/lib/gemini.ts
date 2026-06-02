@@ -1,6 +1,6 @@
 import { Lead } from "../types";
 
-async function callOllama(prompt) {
+async function callOllama(prompt: string) {
   const OLLAMA_API_KEY = process.env.OLLAMA_API_KEY;
   const OLLAMA_BASE_URL = process.env.OLLAMA_BASE_URL || "http://127.0.0.1:11434/v1";
   const OLLAMA_MODEL = process.env.OLLAMA_MODEL || "gpt-oss:120b-cloud";
@@ -34,21 +34,19 @@ async function callOllama(prompt) {
     throw error;
   }
 }
-
-
 const PROFESSIONAL_EXPERIENCE = `
-[Agentic & Multi-Agent Systems]: Architected Neo-Council, a multi-agent governance layer for Web3. Built custom VS Code AI assistants using LangGraph and MCP servers. Expert in agent orchestration and memory management.
-[Financial & Forecasting AI]: Built Neo-Investment quant engines (Monte Carlo, VaR) and Apex Prediction (LightGBM, NHITS) for complex time-series forecasting with SHAP explainability.
-[AI Security & Infrastructure]: Developed MSAP (RAG-powered vulnerability reporting) and Neo-Defense (MLOps for threat detection). Deep experience in deploying LLMs on AWS EC2 GPU via Docker/CI/CD.
-[Software Engineering Foundation]: Transitioned legacy JEE monoliths to Spring Boot microservices. Strong Java/Python/TypeScript background.
+[Agentic & Multi-Agent Systems]: Architected Neo-Council, a multi-agent governance system, and built custom VS Code AI assistants using LangGraph and MCP servers.
+[Enterprise Microservices & Migration]: Engineered the transition of legacy monolithic Java EE (JEE) systems into highly scalable Spring Boot microservices.
+[Financial & Forecasting AI]: Built Neo-Investment quant engines (Monte Carlo, VaR) and automated time-series ML lifecycles (LightGBM) with SHAP explainability[cite: 1].
+[AI Security & Infrastructure]: Developed MSAP (RAG-powered vulnerability reporting) and deployed end-to-end MLOps pipelines using GitHub Actions, Docker, and AWS EC2 GPU instances[cite: 1].
 `;
 
-const PERSONAL_DEFINITION = `I am an AI Engineer focused on building agentic RAG systems and multi agent architectures that move beyond simple automation to production ready decision support. I specialize in deploying end to end AI pipelines that turn complex data into structured, actionable insights.`;
+const PERSONAL_DEFINITION = `I am an AI Software Engineer focused on building agentic RAG systems and multi-agent architectures that move beyond simple automation to production-ready decision support. I specialize in deploying end-to-end AI pipelines that turn complex data into structured, actionable insights.`;
 
 export async function generateOutreachEmail(lead: Lead, companyContext: string) {
   const prompt = `
 # ROLE
-You are Yosra Omrane, a world-class, visionary AI Software Engineer. You write cold outreach emails to tech leaders that are so insightful they cannot be ignored. You don't ask for a job—you propose technical value and demonstrate peer-level engineering acumen to secure an interview.
+You are Yosra Omrane, an elite, pragmatic AI Software Engineer. You write spontaneous application emails to tech leaders that are insightful and deeply relevant. You do not beg for a job; instead, you propose technical value and demonstrate a deep understanding of production-grade engineering to secure an interview.
 
 # INPUT DATA
 - Lead: ${lead.name}, ${lead.role} at ${lead.company}
@@ -57,16 +55,16 @@ You are Yosra Omrane, a world-class, visionary AI Software Engineer. You write c
 - Personal Definition: ${PERSONAL_DEFINITION}
 
 # STEP 1: ANALYZE (Internal Monologue)
-1. Deduce ${lead.company}'s core product and their most likely current AI/engineering bottleneck.
+1. Deduce ${lead.company}'s core product and their most likely current AI/engineering bottleneck regarding scalability or deployment.
 2. Formulate a highly specific technical hypothesis about how agentic workflows, RAG, or MLOps could solve that bottleneck.
-3. Select ONE project from my background that perfectly demonstrates I have already built this solution.
+3. Select ONE project from my background that perfectly demonstrates I have already built this solution in a production or simulated-production environment.
 
 # STEP 2: COMPOSE THE EMAIL
-Write a highly compelling outreach email.
+Write a highly compelling spontaneous application email.
 
 ## Subject Line
 Must be a "pattern interrupt" that a busy executive would open. 
-Examples: "Agentic architecture for ${lead.company}'s [Product]", "Scaling [Specific Tech] at ${lead.company}", or a thought-provoking technical question.
+Examples: "Agentic architecture for ${lead.company}'s [Product]", "De-risking [Specific Tech] at ${lead.company}", or a thought-provoking technical question regarding their stack.
 
 ## Paragraph 1: The Hook & Hypothesis
 Start with a direct, insightful observation about their tech or market. Prove immediately that you understand their deepest technical challenges.
@@ -75,28 +73,29 @@ Example: "The way ${lead.company} is handling [problem] is fascinating, but scal
 ## Paragraph 2: The Core Identity (Verbatim Integration)
 You MUST include my Personal Definition exactly as written here, seamlessly integrated:
 "${PERSONAL_DEFINITION}"
-Follow it with a sentence connecting this identity directly to the hypothesis you formed for ${lead.company}.
+Follow it with a single sentence connecting this identity directly to the hypothesis you formed for ${lead.company}.
 
 ## Paragraph 3: The Proof of Competence
 Link your most relevant project. Use the phrase "The core challenge mirrors yours." 
-Briefly describe the specific architecture (e.g., LangGraph, MCP, LightGBM) you built in that project, and how it directly de-risks their roadmap. Show, don't just tell.
+Briefly describe the specific architecture (e.g., LangGraph, MCP, LightGBM, AWS EC2 GPU) you built in that project, and how it directly de-risks their roadmap. Show, don't just tell. Focus on the transition from conception to deployment.
 
 ## Paragraph 4: The Call to Action
-Close with a soft, collaborative call to action indicating that you have attached your resume and are open to joining their team.
+Close with a soft, collaborative call to action indicating that you are proactively seeking opportunities and have attached your resume.
 You MUST NOT ask for a "15-minute call" or claim you "sketched a roadmap". Use this exact phrasing or very similar:
-"I have attached my resume to provide more details about my background. If you see a potential fit for me to join your team and collaborate on these challenges, I would be very open to a discussion."
+"I have attached my resume to provide more details about my background. If you are open to exploring how my experience with agentic workflows could align with your upcoming roadmap, I would welcome a technical discussion."
 
 # CONSTRAINTS
 - Greeting: "Dear ${lead.name},"
 - Signature: "Best regards,\nYosra Omrane\nAI Software Engineer"
 - NO fluff ("I hope you are well", "My name is").
 - DO NOT ask for a call, meeting, or claim to have sketched a roadmap.
-- ABSOLUTELY NO dashes (-) or bullet points. Use beautifully flowing paragraphs.
+- ABSOLUTELY NO dashes (-) or bullet points in the final email body. Use beautifully flowing paragraphs.
 - Max 200 words. Be concise, punchy, and deeply technical.
-- Tone: Peer-to-peer, visionary, elite, yet highly pragmatic.
+- Tone: Peer-to-peer, visionary yet highly pragmatic and focused on real-world execution.
 
 # OUTPUT FORMAT
 Subject: [Subject]
+
 [Email Body]
 `;
   try {
